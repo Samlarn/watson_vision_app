@@ -1,3 +1,6 @@
 # ignore idea files. 
 .idea/*
 
+# ignore target and its content
+target
+
