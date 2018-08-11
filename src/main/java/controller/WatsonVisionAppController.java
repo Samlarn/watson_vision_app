@@ -1,9 +1,9 @@
 package controller;
 
 import model.WatsonVisionCommunicator;
+import view.CommunicationPanel;
 import view.MainWindow;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -36,9 +36,13 @@ public class WatsonVisionAppController {
     class SetAPIKeyListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            JPanel commPanel = window.getCommunicationPanel();
+            CommunicationPanel commPanel = window.getCommunicationPanel();
+            String APIkey = commPanel.getAPIKey();
 
-            System.out.println("API key set!");
+            watsonCommunicator.setAPIKey(APIkey);
+            commPanel.hideAPIKey();
+
+            System.out.println("API key: "+APIkey);
         }
 
     }
