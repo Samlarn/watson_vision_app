@@ -1,6 +1,8 @@
 package view;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -10,17 +12,14 @@ public class CommunicationPanel extends JPanel {
     private JTextField classifierIdsField;
 
     private JButton setApiKeyBtn;
+    private JButton selectImageBtn;
 
     public CommunicationPanel(String title) {
-        Dimension size = new Dimension(455, 355);
+        Dimension size = new Dimension(555, 255);
         this.setPreferredSize(size);
-
-        this.apiKeyField = new JTextField(25);
-        this.classifierIdsField = new JTextField(25);
-
-        this.setApiKeyBtn = new JButton("Set");
-
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setBorder(BorderFactory.createTitledBorder(new LineBorder(Color.BLACK, 1), title,
+                TitledBorder.LEFT, TitledBorder.TOP, null, Color.BLACK));
 
         this.add(APIKeyBoxPanel());
         this.add(classifierIdPanel());
@@ -31,6 +30,9 @@ public class CommunicationPanel extends JPanel {
      * @return the top Panel.
      */
     private JPanel APIKeyBoxPanel() {
+        this.apiKeyField = new JTextField(25);
+        this.setApiKeyBtn = new JButton("Set");
+
         JPanel panel = new JPanel();
         FlowLayout flowLayout = new FlowLayout();
         panel.setLayout(flowLayout);
@@ -45,14 +47,19 @@ public class CommunicationPanel extends JPanel {
      * @return the classifier ids panel.
      */
     private JPanel classifierIdPanel() {
+        this.classifierIdsField = new JTextField(25);
+        this.selectImageBtn = new JButton("Select Image");
+
         JPanel panel = new JPanel();
         FlowLayout flowLayout = new FlowLayout();
         panel.setLayout(flowLayout);
         panel.add(new JLabel("Classifier ids: "), flowLayout);
         this.classifierIdsField.setText("\"lantmannen_994293677\",\"bread_1474507279\"");
         panel.add(classifierIdsField, flowLayout);
+        panel.add(selectImageBtn, flowLayout);
         return panel;
     }
+
 
     /**
      * @return the API key
@@ -81,5 +88,12 @@ public class CommunicationPanel extends JPanel {
     }
 
 
+    /**
+     * Adds a action listener for the select image button.
+     * @param actionListener
+     */
+    public void addSelectImageListener(ActionListener actionListener) {
+        selectImageBtn.addActionListener(actionListener);
+    }
 
 }
