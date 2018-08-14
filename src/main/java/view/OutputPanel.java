@@ -41,7 +41,7 @@ public class OutputPanel extends JPanel {
      * @param text text to be displayed.
      */
     public void displayText(String text) {
-        this.outputTextArea.append(text+"\n");
+        this.outputTextArea.append(" " + text + "\n");
     }
 
     /**

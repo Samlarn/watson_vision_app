@@ -1,5 +1,6 @@
 package controller;
 
+import model.ClassifiedImageResult;
 import model.WatsonVisionCommunicator;
 import view.CommunicationPanel;
 import view.MainWindow;
@@ -12,7 +13,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 public class WatsonVisionAppController {
 
@@ -20,6 +24,7 @@ public class WatsonVisionAppController {
     private WatsonVisionCommunicator watsonCommunicator;
 
     private boolean imageSelected = false;
+    private String imagePath;
 
     public WatsonVisionAppController(MainWindow window, WatsonVisionCommunicator watsonCommunicator) {
         this.window = window;
@@ -89,15 +94,15 @@ public class WatsonVisionAppController {
 
             if(returnVal == JFileChooser.FILES_ONLY) {
                 File image = fc.getSelectedFile();
-                String path = image.getAbsolutePath();
-                outputPanel.displayText(path);
+                imagePath = image.getAbsolutePath();
+                outputPanel.displayText(imagePath);
                 try {
                     BufferedImage buffImage = ImageIO.read(image);
                     outputPanel.displayImage(resize(buffImage, 255, 235));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                System.out.println("Image: "+path);
+                System.out.println("Image: "+imagePath);
                 setImageSelected(true);
             }
             else {
@@ -125,13 +130,29 @@ public class WatsonVisionAppController {
         }
     }
 
-
+    /**
+     * Listens to classify image button.
+     */
     class ClassifyImageListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
             OutputPanel outputPanel = window.getOutputPanel();
             if(imageIsSelected()) {
                 System.out.println("classify");
+                String classifierIds = window.getCommunicationPanel().getClassifierIds();
+                try {
+                    List<ClassifiedImageResult> classifiedImages =  watsonCommunicator.getClassifiedImages("foo", imagePath, classifierIds, "0.0");
+                    for(ClassifiedImageResult classifiedImage : classifiedImages) {
+                        Set<String> classNames = classifiedImage.getImageResult().keySet();
+                        for(String className : classNames) {
+                            String score = classifiedImage.getClassScore(className);
+                            outputPanel.displayText(className + ": " + score);
+                            System.out.println(className + ": " + score);
+                        }
+                    }
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                }
             }
             else {
                 outputPanel.displayText("select an image");

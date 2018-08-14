@@ -54,7 +54,7 @@ public class CommunicationPanel extends JPanel {
         FlowLayout flowLayout = new FlowLayout();
         panel.setLayout(flowLayout);
         panel.add(new JLabel("Classifier ids: "), flowLayout);
-        this.classifierIdsField.setText("\"lantmannen_994293677\",\"bread_1474507279\"");
+        this.classifierIdsField.setText("\"lantman_1702805864\"");
         panel.add(classifierIdsField, flowLayout);
         panel.add(selectImageBtn, flowLayout);
         return panel;

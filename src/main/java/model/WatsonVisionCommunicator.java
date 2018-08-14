@@ -7,6 +7,7 @@ import com.ibm.watson.developer_cloud.visual_recognition.v3.model.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,12 +34,15 @@ public class WatsonVisionCommunicator {
 
 
     /**
-     * fetches the classified images from IBM Watson image visualisation API.
-     * @param key - the clients API key.
-     * @param imagePath - the path/url to the image to be classified.
-     * @return the classified image tags and scores.
+     * Sends the image to Watson Vision API.
+     * @param imageName the image name
+     * @param imagePath path to the image
+     * @param classifierIds the classifier ids that gonna be used.
+     * @param threshold the scores threshold.
+     * @return  the classification result.
+     * @throws FileNotFoundException throws if image file not found.
      */
-    public ClassifiedImages getClassifiedImages(String imageName, String imagePath, String classifierIds, String threshold) throws FileNotFoundException {
+    public List<ClassifiedImageResult> getClassifiedImages(String imageName, String imagePath, String classifierIds, String threshold) throws FileNotFoundException {
         InputStream imagesStream = new FileInputStream(imagePath);
 
         String param = "{\"classifier_ids\": ["+classifierIds+"], \"threshold\": "+threshold+"}";
@@ -51,7 +55,30 @@ public class WatsonVisionCommunicator {
 
         ClassifiedImages result = service.classify(classifyOptions).execute();
         System.out.println(result);
-        return result;
+        return parseClassificationResult(result);
+    }
+
+    /**
+     * Parses the JSON result from Watson.
+     * @param result the JSON result
+     * @return a list of the result for all the classified images.
+     */
+    private List<ClassifiedImageResult> parseClassificationResult(ClassifiedImages result) {
+        List<ClassifiedImageResult> results = new ArrayList<ClassifiedImageResult>();
+
+        List<ClassifiedImage> images = result.getImages();
+        for(ClassifiedImage image : images) {
+            ClassifiedImageResult imageResult = new ClassifiedImageResult(image.getImage());
+            List<ClassifierResult> classifiers = image.getClassifiers();
+            for(ClassifierResult classifierResult : classifiers) {
+                List<ClassResult> classResults = classifierResult.getClasses();
+                for(ClassResult classResult : classResults) {
+                    imageResult.addResult(classResult.getClassName(), classResult.getScore().toString());
+                }
+            }
+            results.add(imageResult);
+        }
+        return results;
     }
 
 
