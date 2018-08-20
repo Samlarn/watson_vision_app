@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class WatsonVisionAppController {
 
@@ -95,7 +96,6 @@ public class WatsonVisionAppController {
             if(returnVal == JFileChooser.FILES_ONLY) {
                 File image = fc.getSelectedFile();
                 imagePath = image.getAbsolutePath();
-                outputPanel.displayText(imagePath);
                 try {
                     BufferedImage buffImage = ImageIO.read(image);
                     outputPanel.displayImage(resize(buffImage, 255, 235));
@@ -140,8 +140,11 @@ public class WatsonVisionAppController {
             if(imageIsSelected()) {
                 System.out.println("classify");
                 String classifierIds = window.getCommunicationPanel().getClassifierIds();
+                String threshold = window.getCommunicationPanel().getThreshold();
                 try {
-                    List<ClassifiedImageResult> classifiedImages =  watsonCommunicator.getClassifiedImages("foo", imagePath, classifierIds, "0.0");
+                    String imageName = getImageName(imagePath);
+                    outputPanel.displayText("#Image: " + imageName);
+                    List<ClassifiedImageResult> classifiedImages =  watsonCommunicator.getClassifiedImages(imageName, imagePath, classifierIds, threshold);
                     for(ClassifiedImageResult classifiedImage : classifiedImages) {
                         Set<String> classNames = classifiedImage.getImageResult().keySet();
                         for(String className : classNames) {
@@ -150,6 +153,7 @@ public class WatsonVisionAppController {
                             System.out.println(className + ": " + score);
                         }
                     }
+
                 } catch (FileNotFoundException e1) {
                     e1.printStackTrace();
                 }
@@ -158,6 +162,13 @@ public class WatsonVisionAppController {
                 outputPanel.displayText("select an image");
             }
         }
+
+        private String getImageName(String imagePath) {
+            String[] tmpArr = imagePath.split(Pattern.quote(File.separator));
+            String imageName = tmpArr[tmpArr.length-1];
+            return imageName;
+        }
+
     }
 
 }

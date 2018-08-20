@@ -30,7 +30,7 @@ public class OutputPanel extends JPanel {
 
         JPanel northPanel = new JPanel(new BorderLayout());
         northPanel.add(imageLabel, BorderLayout.CENTER);
-        northPanel.add(classifyBtn, BorderLayout.SOUTH);
+        northPanel.add(classifyBtn, BorderLayout.NORTH);
 
         this.add(northPanel, BorderLayout.NORTH);
         this.add(new JScrollPane(outputTextArea), BorderLayout.CENTER);

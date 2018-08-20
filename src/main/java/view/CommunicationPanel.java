@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 public class CommunicationPanel extends JPanel {
 
     private JTextField apiKeyField;
+    private JTextField thresholdField;
     private JTextField classifierIdsField;
 
     private JButton setApiKeyBtn;
@@ -21,7 +22,9 @@ public class CommunicationPanel extends JPanel {
         this.setBorder(BorderFactory.createTitledBorder(new LineBorder(Color.BLACK, 1), title,
                 TitledBorder.LEFT, TitledBorder.TOP, null, Color.BLACK));
 
+
         this.add(APIKeyBoxPanel());
+        this.add(thresholdPanel());
         this.add(classifierIdPanel());
     }
 
@@ -41,6 +44,22 @@ public class CommunicationPanel extends JPanel {
         panel.add(setApiKeyBtn, flowLayout);
         return panel;
     }
+
+
+    /**
+     * Threshold panel.
+     * @return the threshold score.
+     */
+    private JPanel thresholdPanel() {
+        thresholdField = new JTextField("0.5", 5);
+        JPanel panel = new JPanel();
+        FlowLayout flowLayout = new FlowLayout();
+        panel.setLayout(flowLayout);
+        panel.add(new JLabel("Threshold: "), flowLayout);
+        panel.add(thresholdField, flowLayout);
+        return panel;
+    }
+
 
     /**
      * Classifier IDs panel.
@@ -65,14 +84,18 @@ public class CommunicationPanel extends JPanel {
      * @return the API key
      */
     public String getAPIKey() {
-        return apiKeyField.getText();
+        return this.apiKeyField.getText();
     }
 
     /**
      * Hides the API key
      */
     public void hideAPIKey() {
-        apiKeyField.setText("*******************************");
+        this.apiKeyField.setText("*******************************");
+    }
+
+    public String getThreshold() {
+        return this.thresholdField.getText();
     }
 
     public String getClassifierIds() {
@@ -84,7 +107,7 @@ public class CommunicationPanel extends JPanel {
      * @param actionListener
      */
     public void addSetAPIKeyListener(ActionListener actionListener) {
-        setApiKeyBtn.addActionListener(actionListener);
+        this.setApiKeyBtn.addActionListener(actionListener);
     }
 
 
@@ -93,7 +116,7 @@ public class CommunicationPanel extends JPanel {
      * @param actionListener
      */
     public void addSelectImageListener(ActionListener actionListener) {
-        selectImageBtn.addActionListener(actionListener);
+        this.selectImageBtn.addActionListener(actionListener);
     }
 
 }
